@@ -164,7 +164,6 @@ input:focus-visible {
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  container-type: inline-size;
 }
 
 
@@ -223,7 +222,7 @@ input:focus-visible {
   font-weight: 700;
 }
 
-@container (max-width: 599px) {
+@media (max-width: 599px) {
   .tabs {
     justify-content: center;
   }
@@ -240,7 +239,7 @@ input:focus-visible {
   }
 }
 
-@container (min-width: 600px) and (max-width: 899px) {
+@media (min-width: 600px) and (max-width: 899px) {
   .tabs__item {
     flex: 1 1 auto;
     min-width: calc(20% - 0.5rem);
@@ -251,7 +250,7 @@ input:focus-visible {
   }
 }
 
-@container (min-width: 900px) {
+@media (min-width: 900px) {
   .tabs__item {
     flex: 1 1 0%;
   }
