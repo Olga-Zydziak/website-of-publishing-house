@@ -58,7 +58,21 @@ window.PUBLISHING_TAB_CONTENT = {
           'Wydarzenia i kluby książki integrujące lokalną społeczność'
         ]
       }
-    ]
+    ],
+    store: {
+      type: 'sellastic',
+      containerId: 'my-store-125179016',
+      scriptUrl: 'https://app.sellastik.store/script.js?125179016&data_platform=code&data_date=2025-10-11',
+      arguments: [
+        'categoriesPerRow=3',
+        'views=grid(20,3) list(60) table(60)',
+        'categoryView=grid',
+        'searchView=list',
+        'id=my-store-125179016'
+      ],
+      loadingMessage: 'Ładowanie księgarni…',
+      errorMessage: 'Nie udało się załadować księgarni. Spróbuj ponownie później.'
+    }
   },
   contact: {
     tabLabel: 'Kontakt',

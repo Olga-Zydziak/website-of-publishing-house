@@ -771,14 +771,18 @@
       type: 'file',
       placeholder: '',
       required: false,
-      attributes: { multiple: true, 'aria-describedby': `${attachmentFieldId}-help` }
+      attributes: {
+        multiple: true,
+        'aria-describedby': `${attachmentFieldId}-help`,
+        accept: '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,image/jpeg,image/png'
+      }
     });
     attachmentsField.field.classList.add('panels__form-field--wide');
 
     const attachmentHelp = document.createElement('p');
     attachmentHelp.className = 'panels__form-help';
     attachmentHelp.id = `${attachmentFieldId}-help`;
-    attachmentHelp.textContent = 'You can add up to 5 files (max 10 MB each).';
+    attachmentHelp.textContent = 'You can add up to 5 files (max 10 MB each). Allowed: PDF, DOC, DOCX, TXT, JPG, PNG.';
     attachmentsField.field.appendChild(attachmentHelp);
 
     fieldsWrapper.append(
@@ -826,6 +830,16 @@
         const MAX_FILES = 5;
         const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
         const MAX_TOTAL_SIZE_BYTES = 25 * 1024 * 1024;
+        const ALLOWED_MIME_TYPES = [
+          'application/pdf',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'text/plain',
+          'image/jpeg',
+          'image/png',
+          'image/jpg'
+        ];
+        const ALLOWED_EXTENSIONS = ['.pdf', '.doc', '.docx', '.txt', '.jpg', '.jpeg', '.png'];
 
         if (payload.attachments.length > MAX_FILES) {
           return {
@@ -841,6 +855,25 @@
             return {
               valid: false,
               message: `Each file must be 10 MB or smaller. Remove "${file.name}" and try again.`
+            };
+          }
+
+          const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+          const mimeTypeAllowed = ALLOWED_MIME_TYPES.includes(file.type);
+          const extensionAllowed = ALLOWED_EXTENSIONS.includes(fileExtension);
+
+          if (!mimeTypeAllowed && !extensionAllowed) {
+            return {
+              valid: false,
+              message: `File "${file.name}" has an unsupported type. Allowed: PDF, DOC, DOCX, TXT, JPG, PNG.`
+            };
+          }
+
+          const dangerousCharsPattern = /[<>:"|?*\x00-\x1f]/;
+          if (dangerousCharsPattern.test(file.name)) {
+            return {
+              valid: false,
+              message: `File "${file.name}" contains invalid characters in its name.`
             };
           }
         }
