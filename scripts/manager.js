@@ -2,6 +2,7 @@
   const CONTENT_STORAGE_KEY = 'publishingTabContent';
   const THEME_STORAGE_KEY = 'publishingThemeOverrides';
   const LOGO_STORAGE_KEY = 'publishingSiteLogo';
+  const COMPANY_STORAGE_KEY = 'publishingCompanyName';
   const THEME_TOKENS = [
     '--color-background',
     '--color-surface',
@@ -123,6 +124,40 @@
       return true;
     } catch (error) {
       console.warn('Unable to clear stored logo settings.', error);
+      return false;
+    }
+  };
+
+  const loadCompanySettings = () => {
+    try {
+      const storedValue = window.localStorage?.getItem(COMPANY_STORAGE_KEY);
+      return storedValue ? JSON.parse(storedValue) : null;
+    } catch (error) {
+      console.warn('Unable to load stored company settings.', error);
+      return null;
+    }
+  };
+
+  const saveCompanySettings = (company) => {
+    try {
+      if (!company || !company.name) {
+        window.localStorage?.removeItem(COMPANY_STORAGE_KEY);
+        return true;
+      }
+      window.localStorage?.setItem(COMPANY_STORAGE_KEY, JSON.stringify(company));
+      return true;
+    } catch (error) {
+      console.warn('Unable to persist company settings.', error);
+      return false;
+    }
+  };
+
+  const clearCompanySettings = () => {
+    try {
+      window.localStorage?.removeItem(COMPANY_STORAGE_KEY);
+      return true;
+    } catch (error) {
+      console.warn('Unable to clear stored company settings.', error);
       return false;
     }
   };
@@ -999,6 +1034,155 @@
     }
   });
 
+  const companyNameInput = document.getElementById('manager-company-name');
+  const companyFontSelect = document.getElementById('manager-company-font');
+  const companySizeInput = document.getElementById('manager-company-size');
+  const companySizeValue = document.getElementById('manager-company-size-value');
+  const companyColorInput = document.getElementById('manager-company-color');
+  const companyColorSwatch = document.getElementById('manager-company-color-swatch');
+  const companyPreview = document.getElementById('manager-company-preview');
+  const companyRemoveButton = document.getElementById('manager-company-remove');
+
+  let currentCompany = loadCompanySettings() || {
+    name: '',
+    font: "'Inter', sans-serif",
+    size: '3rem',
+    color: '#f5f7ff'
+  };
+
+  const updateCompanyPreview = (company) => {
+    if (!companyPreview) {
+      return;
+    }
+
+    if (!company || !company.name) {
+      companyPreview.innerHTML = '<p class="content-manager__hint">Preview appears here after entering company name</p>';
+      companyPreview.classList.remove('content-manager__company-preview--has-text');
+      return;
+    }
+
+    const previewText = document.createElement('span');
+    previewText.textContent = company.name;
+    previewText.style.fontFamily = company.font || "'Inter', sans-serif";
+    previewText.style.fontSize = company.size || '3rem';
+    previewText.style.color = company.color || '#f5f7ff';
+    previewText.style.fontWeight = '700';
+    previewText.style.lineHeight = '1.2';
+
+    companyPreview.innerHTML = '';
+    companyPreview.appendChild(previewText);
+    companyPreview.classList.add('content-manager__company-preview--has-text');
+  };
+
+  const syncCompanyForm = () => {
+    if (companyNameInput && currentCompany.name) {
+      companyNameInput.value = currentCompany.name;
+    }
+    if (companyFontSelect && currentCompany.font) {
+      companyFontSelect.value = currentCompany.font;
+    }
+    if (companySizeInput && currentCompany.size) {
+      const sizeValue = parseFloat(currentCompany.size);
+      companySizeInput.value = String(sizeValue);
+      if (companySizeValue) {
+        companySizeValue.textContent = currentCompany.size;
+      }
+    }
+    if (companyColorInput && currentCompany.color) {
+      companyColorInput.value = currentCompany.color;
+      const hexValue = toFullHex(currentCompany.color);
+      if (companyColorSwatch && hexValue) {
+        companyColorSwatch.value = hexValue;
+      }
+    }
+    updateCompanyPreview(currentCompany);
+  };
+
+  syncCompanyForm();
+
+  const saveAndUpdateCompany = () => {
+    currentCompany.name = companyNameInput?.value.trim() || '';
+    currentCompany.font = companyFontSelect?.value || "'Inter', sans-serif";
+    currentCompany.size = companySizeInput ? `${companySizeInput.value}rem` : '3rem';
+    currentCompany.color = companyColorInput?.value.trim() || '#f5f7ff';
+
+    const saved = saveCompanySettings(currentCompany);
+    updateCompanyPreview(currentCompany);
+
+    if (statusOutput) {
+      if (currentCompany.name) {
+        statusOutput.textContent = saved
+          ? 'Company name saved. Refresh the home page to see it.'
+          : 'Company name set but could not be saved to storage.';
+      }
+    }
+  };
+
+  companyNameInput?.addEventListener('input', saveAndUpdateCompany);
+  companyFontSelect?.addEventListener('change', saveAndUpdateCompany);
+
+  companySizeInput?.addEventListener('input', () => {
+    const size = companySizeInput.value;
+    if (companySizeValue) {
+      companySizeValue.textContent = `${size}rem`;
+    }
+    saveAndUpdateCompany();
+  });
+
+  companyColorInput?.addEventListener('input', () => {
+    const color = companyColorInput.value.trim();
+    const hexValue = toFullHex(color);
+    if (companyColorSwatch && hexValue) {
+      companyColorSwatch.value = hexValue;
+    }
+    saveAndUpdateCompany();
+  });
+
+  companyColorSwatch?.addEventListener('input', () => {
+    const hexValue = toFullHex(companyColorSwatch.value);
+    if (companyColorInput && hexValue) {
+      companyColorInput.value = hexValue;
+    }
+    saveAndUpdateCompany();
+  });
+
+  companyRemoveButton?.addEventListener('click', () => {
+    currentCompany = {
+      name: '',
+      font: "'Inter', sans-serif",
+      size: '3rem',
+      color: '#f5f7ff'
+    };
+    const cleared = clearCompanySettings();
+
+    if (companyNameInput) {
+      companyNameInput.value = '';
+    }
+    if (companyFontSelect) {
+      companyFontSelect.value = "'Inter', sans-serif";
+    }
+    if (companySizeInput) {
+      companySizeInput.value = '3';
+    }
+    if (companySizeValue) {
+      companySizeValue.textContent = '3rem';
+    }
+    if (companyColorInput) {
+      companyColorInput.value = '#f5f7ff';
+    }
+    if (companyColorSwatch) {
+      companyColorSwatch.value = '#f5f7ff';
+    }
+
+    updateCompanyPreview(null);
+
+    if (statusOutput) {
+      statusOutput.textContent = cleared
+        ? 'Company name removed. Refresh the home page to see the change.'
+        : 'Company name removed locally but could not clear storage.';
+    }
+  });
+
   tabSelect?.addEventListener('change', () => {
     syncForm(tabSelect.value);
   });
@@ -1030,6 +1214,7 @@
     const contentCleared = clearContentOverrides();
     const themeCleared = clearThemeOverrides();
     const logoCleared = clearLogoSettings();
+    const companyCleared = clearCompanySettings();
 
     if (contentCleared) {
       Object.keys(workingCopy).forEach((key) => {
@@ -1078,7 +1263,35 @@
       updateLogoPreview(null);
     }
 
-    if (contentCleared || themeCleared || logoCleared) {
+    if (companyCleared) {
+      currentCompany = {
+        name: '',
+        font: "'Inter', sans-serif",
+        size: '3rem',
+        color: '#f5f7ff'
+      };
+      if (companyNameInput) {
+        companyNameInput.value = '';
+      }
+      if (companyFontSelect) {
+        companyFontSelect.value = "'Inter', sans-serif";
+      }
+      if (companySizeInput) {
+        companySizeInput.value = '3';
+      }
+      if (companySizeValue) {
+        companySizeValue.textContent = '3rem';
+      }
+      if (companyColorInput) {
+        companyColorInput.value = '#f5f7ff';
+      }
+      if (companyColorSwatch) {
+        companyColorSwatch.value = '#f5f7ff';
+      }
+      updateCompanyPreview(null);
+    }
+
+    if (contentCleared || themeCleared || logoCleared || companyCleared) {
       syncForm(tabSelect.value);
       const messageParts = [];
       if (contentCleared) {
@@ -1089,6 +1302,9 @@
       }
       if (logoCleared) {
         messageParts.push('Logo cleared');
+      }
+      if (companyCleared) {
+        messageParts.push('Company name cleared');
       }
       statusOutput.textContent = `${messageParts.join(', ')}. The manager now reflects the default configuration.`;
     } else {
