@@ -1084,4 +1084,38 @@
   if (yearTarget) {
     yearTarget.textContent = new Date().getFullYear();
   }
+
+  const loadAndDisplayLogo = () => {
+    try {
+      const storedLogo = window.localStorage?.getItem('publishingSiteLogo');
+      if (!storedLogo) {
+        return;
+      }
+
+      const logo = JSON.parse(storedLogo);
+      if (!logo || (!logo.src && !logo.url)) {
+        return;
+      }
+
+      const logoContainer = document.querySelector('.site-header__logo');
+      if (!logoContainer) {
+        return;
+      }
+
+      const img = document.createElement('img');
+      img.src = logo.src || logo.url;
+      img.alt = logo.alt || 'Site logo';
+      img.style.maxWidth = '100%';
+      img.style.maxHeight = '100%';
+      img.style.objectFit = 'contain';
+
+      logoContainer.innerHTML = '';
+      logoContainer.appendChild(img);
+      logoContainer.removeAttribute('aria-label');
+    } catch (error) {
+      console.warn('Unable to load site logo.', error);
+    }
+  };
+
+  loadAndDisplayLogo();
 })();

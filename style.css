@@ -867,6 +867,40 @@ input:focus-visible {
   word-break: break-word;
 }
 
+.content-manager__logo-preview {
+  min-height: 8rem;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
+  background-color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  margin-block: var(--space-md);
+}
+
+.content-manager__logo-preview img {
+  max-width: 100%;
+  max-height: 12rem;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.content-manager__logo-preview--has-image {
+  border-style: solid;
+  background-color: var(--color-surface-alt);
+}
+
+.site-header__logo img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
 .category-page {
   flex: 1;
   padding-block: var(--layout-section-spacing);

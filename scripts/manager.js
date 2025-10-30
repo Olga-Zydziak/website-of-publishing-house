@@ -1,6 +1,7 @@
 (() => {
   const CONTENT_STORAGE_KEY = 'publishingTabContent';
   const THEME_STORAGE_KEY = 'publishingThemeOverrides';
+  const LOGO_STORAGE_KEY = 'publishingSiteLogo';
   const THEME_TOKENS = [
     '--color-background',
     '--color-surface',
@@ -88,6 +89,40 @@
       return true;
     } catch (error) {
       console.warn('Unable to clear stored theme overrides.', error);
+      return false;
+    }
+  };
+
+  const loadLogoSettings = () => {
+    try {
+      const storedValue = window.localStorage?.getItem(LOGO_STORAGE_KEY);
+      return storedValue ? JSON.parse(storedValue) : null;
+    } catch (error) {
+      console.warn('Unable to load stored logo settings.', error);
+      return null;
+    }
+  };
+
+  const saveLogoSettings = (logo) => {
+    try {
+      if (!logo || (!logo.src && !logo.url)) {
+        window.localStorage?.removeItem(LOGO_STORAGE_KEY);
+        return true;
+      }
+      window.localStorage?.setItem(LOGO_STORAGE_KEY, JSON.stringify(logo));
+      return true;
+    } catch (error) {
+      console.warn('Unable to persist logo settings.', error);
+      return false;
+    }
+  };
+
+  const clearLogoSettings = () => {
+    try {
+      window.localStorage?.removeItem(LOGO_STORAGE_KEY);
+      return true;
+    } catch (error) {
+      console.warn('Unable to clear stored logo settings.', error);
       return false;
     }
   };
@@ -805,6 +840,165 @@
 
   syncThemeFields();
 
+  const logoFileInput = document.getElementById('manager-logo-file');
+  const logoUrlInput = document.getElementById('manager-logo-url');
+  const logoAltInput = document.getElementById('manager-logo-alt');
+  const logoPreview = document.getElementById('manager-logo-preview');
+  const logoRemoveButton = document.getElementById('manager-logo-remove');
+
+  let currentLogo = loadLogoSettings();
+
+  const updateLogoPreview = (logo) => {
+    if (!logoPreview) {
+      return;
+    }
+
+    if (!logo || (!logo.src && !logo.url)) {
+      logoPreview.innerHTML = '<p class="content-manager__hint">Preview appears here after upload</p>';
+      logoPreview.classList.remove('content-manager__logo-preview--has-image');
+      return;
+    }
+
+    const imgSrc = logo.src || logo.url;
+    const imgAlt = logo.alt || 'Site logo';
+    logoPreview.innerHTML = `<img src="${imgSrc}" alt="${imgAlt}" />`;
+    logoPreview.classList.add('content-manager__logo-preview--has-image');
+  };
+
+  const syncLogoForm = () => {
+    if (currentLogo) {
+      if (logoUrlInput && currentLogo.url) {
+        logoUrlInput.value = currentLogo.url;
+      }
+      if (logoAltInput && currentLogo.alt) {
+        logoAltInput.value = currentLogo.alt;
+      }
+      updateLogoPreview(currentLogo);
+    }
+  };
+
+  syncLogoForm();
+
+  logoFileInput?.addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const MAX_FILE_SIZE = 2 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      if (statusOutput) {
+        statusOutput.textContent = 'Logo file must be 2 MB or smaller.';
+      }
+      logoFileInput.value = '';
+      return;
+    }
+
+    const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp'];
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      if (statusOutput) {
+        statusOutput.textContent = 'Logo must be PNG, JPG, SVG, or WebP format.';
+      }
+      logoFileInput.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target.result;
+      currentLogo = {
+        src: base64,
+        alt: logoAltInput?.value || 'Site logo',
+        type: 'upload'
+      };
+
+      const saved = saveLogoSettings(currentLogo);
+      updateLogoPreview(currentLogo);
+
+      if (logoUrlInput) {
+        logoUrlInput.value = '';
+      }
+
+      if (statusOutput) {
+        statusOutput.textContent = saved
+          ? 'Logo uploaded and saved. Refresh the home page to see it.'
+          : 'Logo uploaded but could not be saved to storage.';
+      }
+    };
+
+    reader.onerror = () => {
+      if (statusOutput) {
+        statusOutput.textContent = 'Failed to read logo file.';
+      }
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  logoUrlInput?.addEventListener('blur', () => {
+    const url = logoUrlInput.value.trim();
+    if (!url) {
+      return;
+    }
+
+    if (!/^https?:\/\/.+\.(png|jpe?g|svg|webp)$/i.test(url)) {
+      if (statusOutput) {
+        statusOutput.textContent = 'Logo URL must be a valid image link (PNG, JPG, SVG, or WebP).';
+      }
+      return;
+    }
+
+    currentLogo = {
+      url,
+      alt: logoAltInput?.value || 'Site logo',
+      type: 'url'
+    };
+
+    const saved = saveLogoSettings(currentLogo);
+    updateLogoPreview(currentLogo);
+
+    if (logoFileInput) {
+      logoFileInput.value = '';
+    }
+
+    if (statusOutput) {
+      statusOutput.textContent = saved
+        ? 'Logo URL saved. Refresh the home page to see it.'
+        : 'Logo URL set but could not be saved to storage.';
+    }
+  });
+
+  logoAltInput?.addEventListener('blur', () => {
+    if (currentLogo) {
+      currentLogo.alt = logoAltInput.value.trim() || 'Site logo';
+      saveLogoSettings(currentLogo);
+      updateLogoPreview(currentLogo);
+    }
+  });
+
+  logoRemoveButton?.addEventListener('click', () => {
+    currentLogo = null;
+    const cleared = clearLogoSettings();
+
+    if (logoFileInput) {
+      logoFileInput.value = '';
+    }
+    if (logoUrlInput) {
+      logoUrlInput.value = '';
+    }
+    if (logoAltInput) {
+      logoAltInput.value = '';
+    }
+
+    updateLogoPreview(null);
+
+    if (statusOutput) {
+      statusOutput.textContent = cleared
+        ? 'Logo removed. Refresh the home page to see the change.'
+        : 'Logo removed locally but could not clear storage.';
+    }
+  });
+
   tabSelect?.addEventListener('change', () => {
     syncForm(tabSelect.value);
   });
@@ -835,6 +1029,7 @@
   clearButton?.addEventListener('click', () => {
     const contentCleared = clearContentOverrides();
     const themeCleared = clearThemeOverrides();
+    const logoCleared = clearLogoSettings();
 
     if (contentCleared) {
       Object.keys(workingCopy).forEach((key) => {
@@ -869,7 +1064,21 @@
       syncThemeFields();
     }
 
-    if (contentCleared || themeCleared) {
+    if (logoCleared) {
+      currentLogo = null;
+      if (logoFileInput) {
+        logoFileInput.value = '';
+      }
+      if (logoUrlInput) {
+        logoUrlInput.value = '';
+      }
+      if (logoAltInput) {
+        logoAltInput.value = '';
+      }
+      updateLogoPreview(null);
+    }
+
+    if (contentCleared || themeCleared || logoCleared) {
       syncForm(tabSelect.value);
       const messageParts = [];
       if (contentCleared) {
@@ -878,7 +1087,10 @@
       if (themeCleared) {
         messageParts.push('Theme overrides cleared');
       }
-      statusOutput.textContent = `${messageParts.join(' and ')}. The manager now reflects the default configuration.`;
+      if (logoCleared) {
+        messageParts.push('Logo cleared');
+      }
+      statusOutput.textContent = `${messageParts.join(', ')}. The manager now reflects the default configuration.`;
     } else {
       statusOutput.textContent = 'Unable to clear stored changes. Please check your browser permissions.';
     }
