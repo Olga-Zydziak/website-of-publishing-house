@@ -100,6 +100,31 @@
             <p class="content-manager__status" id="manager-status" role="status" aria-live="polite"></p>
           </form>
           <aside class="content-manager__sidebar" aria-label="Visual theme controls">
+            <section class="content-manager__panel" data-manager-logo>
+              <h2 class="content-manager__panel-title">Site Logo</h2>
+              <p class="content-manager__hint">Upload a logo image or provide a URL. Appears in the top-left corner of the home page.</p>
+              <div class="content-manager__field">
+                <label class="content-manager__label" for="manager-logo-file">Upload logo</label>
+                <input class="content-manager__input" id="manager-logo-file" name="manager-logo-file" type="file" accept="image/png,image/jpeg,image/jpg,image/svg+xml,image/webp" aria-describedby="manager-logo-file-help" />
+                <p class="content-manager__hint" id="manager-logo-file-help">PNG, JPG, SVG, or WebP. Max 2 MB.</p>
+              </div>
+              <div class="content-manager__field">
+                <label class="content-manager__label" for="manager-logo-url">Or paste logo URL</label>
+                <input class="content-manager__input" id="manager-logo-url" name="manager-logo-url" type="url" placeholder="https://example.com/logo.png" aria-describedby="manager-logo-url-help" />
+                <p class="content-manager__hint" id="manager-logo-url-help">Direct link to an image file.</p>
+              </div>
+              <div class="content-manager__field">
+                <label class="content-manager__label" for="manager-logo-alt">Logo alt text</label>
+                <input class="content-manager__input" id="manager-logo-alt" name="manager-logo-alt" type="text" placeholder="Company Name" aria-describedby="manager-logo-alt-help" />
+                <p class="content-manager__hint" id="manager-logo-alt-help">Accessibility description for screen readers.</p>
+              </div>
+              <div class="content-manager__logo-preview" id="manager-logo-preview" aria-live="polite">
+                <p class="content-manager__hint">Preview appears here after upload</p>
+              </div>
+              <div class="content-manager__actions">
+                <button class="content-manager__button content-manager__button--ghost" type="button" id="manager-logo-remove">Remove logo</button>
+              </div>
+            </section>
             <section class="content-manager__panel" data-manager-theme>
               <h2 class="content-manager__panel-title">Brand colors</h2>
               <p class="content-manager__hint">Adjust the primary palette. Changes apply instantly in this preview and can be exported for your production site.</p>
