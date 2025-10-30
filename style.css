@@ -892,6 +892,24 @@ input:focus-visible {
   background-color: var(--color-surface-alt);
 }
 
+.content-manager__company-preview {
+  min-height: 6rem;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
+  background-color: var(--color-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  margin-block: var(--space-md);
+  text-align: center;
+}
+
+.content-manager__company-preview--has-text {
+  border-style: solid;
+  background-color: var(--color-surface-alt);
+}
+
 .site-header__logo img {
   max-width: 100%;
   max-height: 100%;
@@ -899,6 +917,21 @@ input:focus-visible {
   height: auto;
   object-fit: contain;
   display: block;
+}
+
+.site-header__hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.site-header__company-name {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
 }
 
 .category-page {

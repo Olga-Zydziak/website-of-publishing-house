@@ -1117,5 +1117,37 @@
     }
   };
 
+  const loadAndDisplayCompanyName = () => {
+    try {
+      const storedCompany = window.localStorage?.getItem('publishingCompanyName');
+      if (!storedCompany) {
+        return;
+      }
+
+      const company = JSON.parse(storedCompany);
+      if (!company || !company.name) {
+        return;
+      }
+
+      const heroContainer = document.querySelector('.site-header__hero');
+      if (!heroContainer) {
+        return;
+      }
+
+      const heading = document.createElement('h1');
+      heading.className = 'site-header__company-name';
+      heading.textContent = company.name;
+      heading.style.fontFamily = company.font || "'Inter', sans-serif";
+      heading.style.fontSize = company.size || '3rem';
+      heading.style.color = company.color || '#f5f7ff';
+
+      heroContainer.innerHTML = '';
+      heroContainer.appendChild(heading);
+    } catch (error) {
+      console.warn('Unable to load company name.', error);
+    }
+  };
+
   loadAndDisplayLogo();
+  loadAndDisplayCompanyName();
 })();
