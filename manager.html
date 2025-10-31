@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@400;500;600;700&family=Merriweather:wght@400;700&family=Roboto:wght@400;500;700&family=Lora:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="page">
@@ -56,7 +57,7 @@
             </div>
             <div class="content-manager__field content-manager__field--wide">
               <label class="content-manager__label" for="manager-body">Tab content</label>
-              <textarea class="content-manager__textarea" id="manager-body" name="manager-body" rows="10" required></textarea>
+              <div id="editor" class="content-manager__editor"></div>
               <p class="content-manager__hint">Example bullet list:<br />- First highlight<br />- Second highlight</p>
             </div>
             <fieldset class="content-manager__fieldset" data-manager-contact hidden>
@@ -293,6 +294,7 @@
       <p class="site-footer__text">Need help integrating these updates? Email <a class="site-footer__social-link" href="mailto:kontakt@twojwydawnictwo.pl">kontakt@twojwydawnictwo.pl</a></p>
     </div>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
   <script src="scripts/tab-content.js"></script>
   <script src="scripts/manager.js"></script>
 </body>

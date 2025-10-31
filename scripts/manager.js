@@ -352,7 +352,6 @@
   const tabSelect = document.getElementById('manager-tab');
   const titleInput = document.getElementById('manager-title');
   const tabLabelInput = document.getElementById('manager-tab-label');
-  const bodyInput = document.getElementById('manager-body');
   const statusOutput = document.getElementById('manager-status');
   const resetButton = document.getElementById('manager-reset');
   const contactFieldset = document.querySelector('[data-manager-contact]');
@@ -388,6 +387,21 @@
   let themeOverrides = loadThemeOverrides();
   applyThemeOverrides(themeOverrides);
 
+  const quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ header: [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ align: [] }],
+        ['link', 'image'],
+        ['clean'],
+        [{ color: [] }],
+      ],
+    },
+  });
+
   const buildFormEndpoint = (email) =>
     email ? `https://formsubmit.co/ajax/${encodeURIComponent(email)}` : '';
 
@@ -413,46 +427,6 @@
     };
   };
 
-  const formatBodyForInput = (body = []) =>
-    body
-      .map((entry) => {
-        if (typeof entry === 'string') {
-          return entry;
-        }
-
-        if (entry?.type === 'list' && Array.isArray(entry.items)) {
-          return entry.items.map((item) => `- ${item}`).join('\n');
-        }
-
-        return '';
-      })
-      .filter(Boolean)
-      .join('\n\n');
-
-  const parseInputToBody = (value) => {
-    const segments = value
-      .split(/\n\s*\n/g)
-      .map((segment) => segment.trim())
-      .filter(Boolean);
-
-    return segments.map((segment) => {
-      const lines = segment
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean);
-
-      const listItems = lines
-        .filter((line) => /^[-•]/.test(line))
-        .map((line) => line.replace(/^[-•]\s*/, '').trim())
-        .filter(Boolean);
-
-      if (listItems.length && listItems.length === lines.length) {
-        return { type: 'list', items: listItems };
-      }
-
-      return lines.join(' ');
-    });
-  };
 
   function renderOutput() {
     const contentExport = `window.PUBLISHING_TAB_CONTENT = ${JSON.stringify(workingCopy, null, 2)};`;
@@ -783,7 +757,7 @@
       if (tabLabelInput) {
         tabLabelInput.value = '';
       }
-      bodyInput.value = '';
+      quill.root.innerHTML = '';
       if (contactFieldset) {
         contactFieldset.hidden = true;
       }
@@ -794,7 +768,7 @@
     if (tabLabelInput) {
       tabLabelInput.value = content.tabLabel || content.title || '';
     }
-    bodyInput.value = formatBodyForInput(content.body || []);
+    quill.root.innerHTML = content.body || '';
 
     if (contactFieldset) {
       const isContact = tabKey === 'contact';
@@ -826,7 +800,7 @@
   const updateWorkingCopy = (tabKey) => {
     const titleValue = titleInput.value.trim();
     const tabLabelValue = tabLabelInput?.value.trim() || '';
-    const bodyValue = bodyInput.value.trim();
+    const bodyValue = quill.root.innerHTML;
 
     if (!titleValue || !bodyValue) {
       statusOutput.textContent = 'Please complete the title and body before updating the configuration.';
@@ -838,7 +812,7 @@
       ...existingContent,
       title: titleValue,
       tabLabel: tabLabelValue || titleValue,
-      body: parseInputToBody(bodyValue)
+      body: bodyValue
     };
 
     if (tabKey === 'contact') {
