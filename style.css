@@ -1025,8 +1025,14 @@ input:focus-visible {
 }
 
 @media (min-width: 60rem) {
-  .site-header__inner,
-  .site-header__branding,
+  .site-header__inner {
+    grid-template-columns: minmax(0, clamp(10rem, 32vw, var(--layout-sidebar-width))) minmax(0, 1fr);
+  }
+
+  .site-header__branding {
+    grid-template-columns: var(--header-layout-split, 50%) 1fr;
+  }
+
   .layout {
     grid-template-columns: minmax(0, var(--layout-sidebar-width)) minmax(0, 1fr);
   }
