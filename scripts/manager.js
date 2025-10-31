@@ -387,6 +387,10 @@
   let themeOverrides = loadThemeOverrides();
   applyThemeOverrides(themeOverrides);
 
+  const Font = Quill.import('formats/font');
+  Font.whitelist = ['sans-serif', 'serif', 'monospace', 'arial', 'times-new-roman'];
+  Quill.register(Font, true);
+
   const quill = new Quill('#editor', {
     theme: 'snow',
     modules: {
@@ -395,6 +399,7 @@
         ['bold', 'italic', 'underline'],
         [{ list: 'ordered' }, { list: 'bullet' }],
         [{ align: [] }],
+        [{ font: Font.whitelist }],
         ['link', 'image'],
         ['clean'],
         [{ color: [] }],
