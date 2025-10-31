@@ -1001,7 +1001,7 @@ input:focus-visible {
 
   .site-header__branding {
     grid-column: 1 / -1;
-    grid-template-columns: minmax(0, clamp(10rem, 32vw, var(--layout-sidebar-width))) minmax(0, 1fr);
+    grid-template-columns: var(--header-layout-split, clamp(10rem, 32vw, 20rem)) 1fr;
     gap: var(--layout-gap);
   }
 
