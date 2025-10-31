@@ -766,6 +766,10 @@ input:focus-visible {
   resize: vertical;
   min-height: 12rem;
 }
+  .ql-snow .ql-picker.ql-line-height .ql-picker-label::before,
+  .ql-snow .ql-picker.ql-line-height .ql-picker-item::before {
+    content: attr(data-value) !important;
+  }
 
 .content-manager__select:focus-visible,
 .content-manager__input:focus-visible,

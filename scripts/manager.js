@@ -391,6 +391,14 @@
   Font.whitelist = ['sans-serif', 'serif', 'monospace', 'arial', 'times-new-roman'];
   Quill.register(Font, true);
 
+  const parchment = Quill.import('parchment');
+  const lineHeightConfig = {
+    scope: parchment.Scope.BLOCK,
+    whitelist: ['1.0', '1.2', '1.5', '2.0', '2.5', '3.0']
+  };
+  const lineHeightStyle = new parchment.Attributor.Style('line-height', 'line-height', lineHeightConfig);
+  Quill.register(lineHeightStyle, true);
+
   const quill = new Quill('#editor', {
     theme: 'snow',
     modules: {
@@ -400,6 +408,7 @@
         [{ list: 'ordered' }, { list: 'bullet' }],
         [{ align: [] }],
         [{ font: Font.whitelist }],
+        [{ 'line-height': ['1.0', '1.2', '1.5', '2.0', '2.5', '3.0'] }],
         ['link', 'image'],
         ['clean'],
         [{ color: [] }],
