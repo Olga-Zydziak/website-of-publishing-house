@@ -2,63 +2,22 @@ window.PUBLISHING_TAB_CONTENT = {
   publishing: {
     tabLabel: 'Dom Wydawniczy',
     title: 'Dom Wydawniczy',
-    body: [
-      'Nasze wydawnictwo od ponad dwóch dekad wspiera autorów, dostarczając czytelnikom wyjątkowe historie z całego świata.',
-      'Kładziemy nacisk na staranny dobór tytułów, wysoką jakość redakcji oraz partnerską współpracę z twórcami.',
-      {
-        type: 'list',
-        items: [
-          'Główne gatunki: literatura piękna, reportaż, literatura dziecięca',
-          'Wyróżnienia międzynarodowych targów książki i nagrody branżowe',
-          'Sieć partnerów dystrybucyjnych obejmująca księgarnie stacjonarne i online'
-        ]
-      }
-    ]
+    body: '<p>Nasze wydawnictwo od ponad dwóch dekad wspiera autorów, dostarczając czytelnikom wyjątkowe historie z całego świata.</p><p>Kładziemy nacisk na staranny dobór tytułów, wysoką jakość redakcji oraz partnerską współpracę z twórcami.</p><ul><li>Główne gatunki: literatura piękna, reportaż, literatura dziecięca</li><li>Wyróżnienia międzynarodowych targów książki i nagrody branżowe</li><li>Sieć partnerów dystrybucyjnych obejmująca księgarnie stacjonarne i online</li></ul>'
   },
   authors: {
     tabLabel: 'Dla Autorów',
     title: 'Dla Autorów',
-    body: [
-      'Zapewniamy kompleksową opiekę redakcyjną i marketingową – od pierwszej wersji manuskryptu po premierę rynkową.',
-      {
-        type: 'list',
-        items: [
-          'Program mentorski dla debiutujących autorów',
-          'Spotkania pitchingowe z zespołem redakcyjnym co miesiąc',
-          'Szczegółowe wytyczne dotyczące przygotowania propozycji wydawniczej'
-        ]
-      }
-    ]
+    body: '<p>Zapewniamy kompleksową opiekę redakcyjną i marketingową – od pierwszej wersji manuskryptu po premierę rynkową.</p><ul><li>Program mentorski dla debiutujących autorów</li><li>Spotkania pitchingowe z zespołem redakcyjnym co miesiąc</li><li>Szczegółowe wytyczne dotyczące przygotowania propozycji wydawniczej</li></ul>'
   },
   selfPublishing: {
     tabLabel: 'Self-publishing',
     title: 'Self-publishing',
-    body: [
-      'Oferujemy modułowe pakiety druku na żądanie, dystrybucji i promocji dla niezależnych twórców.',
-      {
-        type: 'list',
-        items: [
-          'Usługi korekty, składu oraz przygotowania e-booków',
-          'Dostęp do globalnych platform sprzedażowych',
-          'Szkolenia z budowania strategii marketingowej dla autorów'
-        ]
-      }
-    ]
+    body: '<p>Oferujemy modułowe pakiety druku na żądanie, dystrybucji i promocji dla niezależnych twórców.</p><ul><li>Usługi korekty, składu oraz przygotowania e-booków</li><li>Dostęp do globalnych platform sprzedażowych</li><li>Szkolenia z budowania strategii marketingowej dla autorów</li></ul>'
   },
   bookstore: {
     tabLabel: 'Księgarnia',
     title: 'Księgarnia',
-    body: [
-      'Kuratorujemy kolekcje tematyczne, które zmieniają się wraz z sezonem i trendami czytelniczymi.',
-      {
-        type: 'list',
-        items: [
-          'Limitowane edycje z autografami autorów',
-          'Indywidualne rekomendacje przygotowywane przez zespół księgarzy',
-          'Wydarzenia i kluby książki integrujące lokalną społeczność'
-        ]
-      }
-    ],
+    body: '<p>Kuratorujemy kolekcje tematyczne, które zmieniają się wraz z sezonem i trendami czytelniczymi.</p><ul><li>Limitowane edycje z autografami autorów</li><li>Indywidualne rekomendacje przygotowywane przez zespół księgarzy</li><li>Wydarzenia i kluby książki integrujące lokalną społeczność</li></ul>',
     store: {
       type: 'sellastic',
       containerId: 'my-store-125179016',
@@ -77,9 +36,7 @@ window.PUBLISHING_TAB_CONTENT = {
   contact: {
     tabLabel: 'Kontakt',
     title: 'Kontakt',
-    body: [
-      'Skorzystaj z formularza lub danych kontaktowych, aby skonsultować współpracę wydawniczą, prawa autorskie czy propozycje partnerstw.'
-    ],
+    body: '<p>Skorzystaj z formularza lub danych kontaktowych, aby skonsultować współpracę wydawniczą, prawa autorskie czy propozycje partnerstw.</p>',
     contactDetails: {
       phoneLabel: 'Telefon',
       phoneNumber: '+48 123 456 789',

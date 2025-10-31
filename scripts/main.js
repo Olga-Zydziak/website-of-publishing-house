@@ -193,24 +193,6 @@
   const tabPanelTitle = document.getElementById('tab-panel-title');
   const tabPanelBody = document.getElementById('tab-panel-body');
 
-  const createParagraph = (text) => {
-    const paragraphElement = document.createElement('p');
-    paragraphElement.className = 'panels__text';
-    paragraphElement.textContent = text;
-    return paragraphElement;
-  };
-
-  const createList = (items) => {
-    const listElement = document.createElement('ul');
-    listElement.className = 'panels__list';
-    items.forEach((itemText) => {
-      const listItem = document.createElement('li');
-      listItem.className = 'panels__list-item';
-      listItem.textContent = itemText;
-      listElement.appendChild(listItem);
-    });
-    return listElement;
-  };
 
   const scriptCache = new Map();
 
@@ -1021,18 +1003,7 @@
     }
 
     tabPanelTitle.textContent = content.title;
-    tabPanelBody.innerHTML = '';
-
-    content.body?.forEach((entry) => {
-      if (typeof entry === 'string') {
-        tabPanelBody.appendChild(createParagraph(entry));
-        return;
-      }
-
-      if (entry?.type === 'list' && Array.isArray(entry.items)) {
-        tabPanelBody.appendChild(createList(entry.items));
-      }
-    });
+    tabPanelBody.innerHTML = content.body || '';
 
     if (content.store?.type === 'sellastic') {
       tabPanelBody.appendChild(createSellasticStore(content.store));
