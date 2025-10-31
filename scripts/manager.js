@@ -17,7 +17,8 @@
     '--page-shade-strength',
     '--page-shade-soft',
     '--page-shade-panel',
-    '--tabs-size-scale'
+    '--tabs-size-scale',
+    '--header-layout-split'
   ];
 
   const DEFAULT_ACCENT_SHADE = 12; // percentage
@@ -378,6 +379,8 @@
   const shadeDirectionButtons = Array.from(document.querySelectorAll('[data-shade-direction]'));
   const tabsScaleInput = document.getElementById('manager-tabs-scale');
   const tabsScaleValue = document.getElementById('manager-tabs-scale-value');
+  const headerSplitInput = document.getElementById('manager-header-split');
+  const headerSplitValue = document.getElementById('manager-header-split-value');
   document.querySelectorAll('[data-theme-picker]').forEach((input) => {
     if (input instanceof HTMLInputElement && input.dataset.themePicker) {
       themePickers.set(input.dataset.themePicker, input);
@@ -391,14 +394,6 @@
   Font.whitelist = ['sans-serif', 'serif', 'monospace', 'arial', 'times-new-roman'];
   Quill.register(Font, true);
 
-  const parchment = Quill.import('parchment');
-  const lineHeightConfig = {
-    scope: parchment.Scope.BLOCK,
-    whitelist: ['1.0', '1.2', '1.5', '2.0', '2.5', '3.0']
-  };
-  const lineHeightStyle = new parchment.Attributor.Style('line-height', 'line-height', lineHeightConfig);
-  Quill.register(lineHeightStyle, true);
-
   const quill = new Quill('#editor', {
     theme: 'snow',
     modules: {
@@ -410,7 +405,6 @@
         [{ indent: '-1' }, { indent: '+1' }],
         [{ align: [] }],
         [{ font: Font.whitelist }],
-        [{ lineHeight: ['1.0', '1.2', '1.5', '2.0', '2.5', '3.0'] }],
         ['link', 'image'],
         ['clean'],
         [{ color: [] }],
@@ -584,6 +578,19 @@
     }
   };
 
+  const syncHeaderSplitControl = () => {
+    if (!headerSplitInput) {
+      return;
+    }
+
+    const stored = themeOverrides['--header-layout-split'] || getComputedTokenValue('--header-layout-split') || '50%';
+    const percent = parseInt(stored, 10) || 50;
+    headerSplitInput.value = String(percent);
+    if (headerSplitValue) {
+      headerSplitValue.textContent = `${percent}%`;
+    }
+  };
+
   const syncThemeFields = () => {
     editableThemeTokens.forEach((token) => {
       syncThemeField(token);
@@ -593,6 +600,7 @@
     syncShadeDirectionControl();
     syncShadowControl();
     syncTabsScaleControl();
+    syncHeaderSplitControl();
   };
 
   const updateThemeToken = (token, value, options = {}) => {
@@ -656,6 +664,9 @@
     }
     if (token === '--tabs-size-scale') {
       syncTabsScaleControl();
+    }
+    if (token === '--header-layout-split') {
+      syncHeaderSplitControl();
     }
     renderOutput();
     if (statusOutput && !options.silent) {
@@ -750,6 +761,18 @@
     const scale = Math.round(percent) / 100;
     updateThemeToken('--tabs-size-scale', Number(scale.toFixed(2)), {
       message: 'Navigation tabs resized. Refresh the home page to preview changes.'
+    });
+  });
+
+  headerSplitInput?.addEventListener('input', () => {
+    const rawValue = Number(headerSplitInput.value);
+    const percent = clamp(Number.isNaN(rawValue) ? 50 : rawValue, 20, 80);
+    headerSplitInput.value = String(percent);
+    if (headerSplitValue) {
+      headerSplitValue.textContent = `${percent}%`;
+    }
+    updateThemeToken('--header-layout-split', `${percent}%`, {
+      message: 'Header layout updated. Refresh the home page to preview changes.'
     });
   });
 
