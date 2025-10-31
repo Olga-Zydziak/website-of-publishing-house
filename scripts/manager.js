@@ -404,11 +404,13 @@
     modules: {
       toolbar: [
         [{ header: [1, 2, 3, false] }],
-        ['bold', 'italic', 'underline'],
+        ['bold', 'italic', 'underline', 'strike'],
+        ['blockquote', 'code-block'],
         [{ list: 'ordered' }, { list: 'bullet' }],
+        [{ indent: '-1' }, { indent: '+1' }],
         [{ align: [] }],
         [{ font: Font.whitelist }],
-        [{ 'line-height': ['1.0', '1.2', '1.5', '2.0', '2.5', '3.0'] }],
+        [{ lineHeight: ['1.0', '1.2', '1.5', '2.0', '2.5', '3.0'] }],
         ['link', 'image'],
         ['clean'],
         [{ color: [] }],
